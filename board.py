@@ -10,6 +10,7 @@ class Board:
     
     board = None
     free_pieces = None
+    size = 0
     
     def __init__(self, board_size):
         
@@ -27,6 +28,8 @@ class Board:
         # also start tracking the 12 starting pieces for each player
         pieces = [(color, size) for color in ['black', 'white'] for size in [1,2,3,4]]
         self.free_pieces = dict(zip(pieces, [3 for i in range(8)]))
+        
+        self.size = board_size
         
         print("Welcome to Gobblet.")
     
@@ -117,3 +120,4 @@ b.place_piece(('white', 4), (1,1))
 b.place_piece(('black', 3), (2,2), (1,1)) # should fail
 b.place_piece(('black', 3), (2,2), (3,3)) # should fail
 b.place_piece(('white', 4), (2,2), (1,1)) 
+print(b.board)
