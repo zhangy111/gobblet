@@ -62,6 +62,8 @@ class Board:
         '''
         piece_stack = self.board[position]
         piece_stack.remove(test_piece)
+        if len(piece_stack) == 0:
+            self.board[position] = None
         print("Updated piece stack at", position, ":", piece_stack)
     
     def place_piece(self, new_piece, position, old_position=None):
