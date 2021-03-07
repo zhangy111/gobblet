@@ -11,7 +11,8 @@ class SearchStrategy:
 
     def find_best_move(self, board, search_depth=2, normalized_strat=False):
         board = copy.deepcopy(board)
-        best_move, minimax_val = self._minimax(board, search_depth, self.player_color) 
+        # best_move, minimax_val = self._minimax(board, search_depth, self.player_color) 
+        best_move, minimax_val = self._alphabeta(board, search_depth, -1e6, 1e6, self.player_color) 
         return best_move
 
     def _minimax(self, board, search_depth, curr_player):
@@ -44,6 +45,47 @@ class SearchStrategy:
                 if val < min_val:
                     min_val = val
                     best_move = move
+
+            return best_move, min_val
+
+    def _alphabeta(self, board, search_depth, alpha, beta, curr_player):
+        avail_moves = board.enumerate_valid_moves(curr_player)
+        if search_depth == 0:
+            return (avail_moves[0], self.get_score(board, self.player_color, board.size)) # Change board.size to L
+
+        if curr_player == self.player_color: # Maximizing player
+            max_val = -1e6 
+            best_move = None             
+            
+            for move in avail_moves:
+                board = copy.deepcopy(board)
+                board.make_move(*move) # Should avoid this
+                move, val = self._alphabeta(board, search_depth - 1, alpha, beta, self.opp_color)
+                if val > max_val:
+                    max_val = val
+                    best_move = move
+
+                alpha = max(alpha, max_val)
+                if alpha >= beta:
+                    break
+
+            return best_move, max_val
+
+        else: # Minimizing player
+            min_val = 1e6 
+            best_move = None             
+            
+            for move in avail_moves:
+                board = copy.deepcopy(board)
+                board.make_move(*move) # Should avoid this
+                move, val = self._alphabeta(board, search_depth - 1, alpha, beta, self.player_color)
+                if val < min_val:
+                    min_val = val
+                    best_move = move
+
+                beta = min(beta, min_val)
+                if beta <= alpha:
+                    break
 
             return best_move, min_val
 
