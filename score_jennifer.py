@@ -27,7 +27,7 @@ class ScoringStrategy:
         return self.scoring_strat(*args, **kwargs)
 
 @ScoringStrategy
-def random_score(board, **kwargs):
+def random_score(board, *args, **kwargs):
     """
     :param board: Board Object
     :return: sum of random scores generated for every space on the board
@@ -39,7 +39,7 @@ def random_score(board, **kwargs):
     return score
 
 @ScoringStrategy
-def linarow_score(board, player_color, L, **kwargs):
+def linarow_score(board, player_color, L, *args, **kwargs):
     """
     :param player_color: "white" or "black"
     :param board: Board object
@@ -137,7 +137,7 @@ def linarow_score(board, player_color, L, **kwargs):
 # assert(linarow_score('black', b, 3) == 100)
 # assert(linarow_score('black', b, 2) == 100)
 
-def consecutive_score(board, player_color, L, **kwargs):
+def consecutive_score(board, player_color, L, *args, **kwargs):
     """
     :param player_color: "white" or "black"
     :param board: Board object
@@ -250,7 +250,7 @@ def consecutive_score(board, player_color, L, **kwargs):
 
 
 #
-def isGameOver(board, **kwargs):
+def isGameOver(board, *args, **kwargs):
     """
     Helper function for freetomove_score()
     :param board: Board object
@@ -267,7 +267,7 @@ def isGameOver(board, **kwargs):
     else:
         return -1
 
-def freetomove_score(board, player_color, **kwargs):
+def freetomove_score(board, player_color, *args, **kwargs):
     """
     :param player_color: black/white
     :param board: Board object
