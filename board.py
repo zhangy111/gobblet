@@ -7,6 +7,7 @@ Created on Thu Feb 18 15:46:21 2021
 """
 import pygame
 from time import sleep
+from renderer import Renderer
 
 
 class Board:
@@ -115,57 +116,16 @@ class Board:
 
         return True
 
-    def start_vis(self):  # setup pygame
-        self.WIDTH = 512  # screen width
-        pygame.init()
-        pygame.display.set_caption("Gobblet!")
-        self.screen = pygame.display.set_mode(
-            (self.WIDTH, self.WIDTH))  # set canvas
-
-    def update_vis(self):  # update board vis only when necessary
-        pygame.display.flip()  # refresh buffer
-
-        ROWS = self.size
-        GRAY = (200, 200, 200)
-        BLACK = (128, 51, 0)
-        WHITE = (255, 194, 153)
-        gap = self.WIDTH // ROWS
-
-        # draw grid
-        x = 0
-        y = 0
-        for i in range(ROWS):
-            x = i * gap
-            pygame.draw.line(self.screen, GRAY, (x, 0), (x, self.WIDTH), 3)
-            pygame.draw.line(self.screen, GRAY, (0, x), (self.WIDTH, x), 3)
-
-        # add pieces
-        for pos, stack in self.board.items():
-            if stack is None:
-                continue
-            circle_center = tuple(gap * i - gap//2 for i in pos)
-            for piece in stack:
-                circle_color = WHITE if piece[0] == 'white' else BLACK
-                radius = (piece[1] / self.size) * (gap // 3)
-                pygame.draw.circle(self.screen, circle_color,
-                                   circle_center, int(radius), 3)
-        pygame.display.flip()
-
-    def end_vis(self):  # housekeeping
-        pygame.quit()
-
-
 if __name__ == '__main__':
     b = Board(4)
-    b.start_vis()
+    r = Renderer(512)
     b.place_piece(('black', 2), (1, 1))
+    r.draw_board(b)
+    sleep(0.5)
     b.place_piece(('white', 3), (1, 1))  # should fail
+    r.draw_board(b)
     # I am not sure why this would fail? Is the piece ordering 1 > 2 > 3 > 4?
     # In that case should this be the other way around?
     # if cur_piece[1] >= new_piece[1]:
     # In the place_piece function
-    b.update_vis()
     sleep(0.5)
-    b.update_vis()
-    sleep(0.5)
-    b.end_vis()
