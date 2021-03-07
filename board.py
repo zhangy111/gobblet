@@ -45,6 +45,8 @@ class Board:
         self.board.update(white_side_stacks)
         self.board.update(black_side_stacks)
         self.size = board_size
+        
+        self.next_turn = 'white' # Next player's color
 
         print("Welcome to Gobblet.")
 
@@ -56,6 +58,9 @@ class Board:
             return False
 
         if not self.board[old_pos]:  # If the old stack is empty, invalid move
+            return False
+        
+        if self.board[old_pos][-1][0] != self.next_turn:
             return False
 
         # Can't move from board to side-stacks
@@ -71,12 +76,14 @@ class Board:
 
         if gobbler_piece[1] > gobbled_piece[1]:
             return True
+
         return False
 
     def make_move(self, old_pos, new_pos):
         if self.can_move(old_pos, new_pos):
             top_piece = self.board[old_pos].pop()
             self.board[new_pos].append(top_piece)
+            self.next_turn = 'white' if self.next_turn == 'black' else 'black'
             return True
         else:
             return False
@@ -105,9 +112,11 @@ if __name__ == '__main__':
     r = Renderer(512)
     N = b.size + 1
 
+    # print(b.next_turn)
     # Move from side-stack to board
     r.draw_board(b)
     b.make_move((0, 1), (1, 1))
+    # print(b.next_turn)
     b.make_move((0, 4), (1, 1))
     r.draw_board(b)
     sleep(0.5)
@@ -119,7 +128,7 @@ if __name__ == '__main__':
 
     # Move from board space to board space
     sleep(0.5)
-    b.make_move((2,  3), (4, 4))
+    b.make_move((2,  3), (4, 4)) # invalid
     r.draw_board(b)
 
     # Move from board space to side stack

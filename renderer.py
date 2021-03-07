@@ -35,7 +35,6 @@ class Renderer:
         for pos, stack in board.board.items():
             if len(stack) == 0:
                 continue
-            print(pos, stack)
             circle_center = tuple(gap * (i+1) - gap//2 for i in pos)
             for piece in stack:
                 circle_color = self.WHITE if piece[0] == 'white' else self.BLACK
