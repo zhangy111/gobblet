@@ -7,12 +7,27 @@ note: all testing was before any stack constraints were in place,
 thus all testing has been commented out for future compilation
 
 @author: Jennifer
+
+Todo:
+1) Decorate all other strategies
+2) Verify order of kwargs
+3) Incorporate design changes from board.py
+
 """
 from board import Board
 import random as rand
 from operator import add
 
-def random_score(board):
+class ScoringStrategy:
+
+    def __init__(self, strat):
+        self.scoring_strat = strat
+
+    def __call__(self, *args, **kwargs):
+        return self.scoring_strat(*args, **kwargs)
+
+@ScoringStrategy
+def random_score(board, **kwargs):
     """
     :param board: Board Object
     :return: sum of random scores generated for every space on the board
@@ -23,7 +38,8 @@ def random_score(board):
         score += rand.randint(0, 100)
     return score
 
-def linarow_score(player_color, board, L):
+@ScoringStrategy
+def linarow_score(board, player_color, L, **kwargs):
     """
     :param player_color: "white" or "black"
     :param board: Board object
@@ -78,6 +94,7 @@ def linarow_score(player_color, board, L):
 # # testing
 # # testing vertical columns
 # b = Board(4)
+# print(random_score(b))
 # b.place_piece(('black', 3), (1,1))
 # b.place_piece(('black', 4), (1,2))
 # b.place_piece(('black', 2), (1,3))
@@ -120,7 +137,7 @@ def linarow_score(player_color, board, L):
 # assert(linarow_score('black', b, 3) == 100)
 # assert(linarow_score('black', b, 2) == 100)
 
-def consecutive_score(player_color, board, L):
+def consecutive_score(board, player_color, L, **kwargs):
     """
     :param player_color: "white" or "black"
     :param board: Board object
@@ -233,7 +250,7 @@ def consecutive_score(player_color, board, L):
 
 
 #
-def isGameOver(board):
+def isGameOver(board, **kwargs):
     """
     Helper function for freetomove_score()
     :param board: Board object
@@ -250,7 +267,7 @@ def isGameOver(board):
     else:
         return -1
 
-def freetomove_score(player_color, board):
+def freetomove_score(board, player_color, **kwargs):
     """
     :param player_color: black/white
     :param board: Board object
