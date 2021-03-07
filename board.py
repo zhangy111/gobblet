@@ -1,16 +1,10 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
-"""
-Created on Thu Feb 18 15:46:21 2021
-
-@author: henry
-"""
 import pygame
 from time import sleep
 from renderer import Renderer
 
 
 class Board:
+    # Todo: Add method to check if the game is at a terminal node
 
     board = None
     free_pieces = None

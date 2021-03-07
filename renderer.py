@@ -10,6 +10,7 @@ class Renderer:
         self.screen_width = screen_width
         self.start_vis()
 
+
     def start_vis(self):  # setup pygame
         pygame.init()
         pygame.display.set_caption("Gobblet!")
