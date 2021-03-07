@@ -49,7 +49,10 @@ class Board:
         print("Welcome to Gobblet.")
 
     def can_move(self, old_pos, new_pos):
-        if old_pos not in self.board or new_pos not in self.board: # If outside board coords
+        if old_pos not in self.board or new_pos not in self.board:  # If outside board coords
+            return False
+
+        if old_pos == new_pos:  # Can't place on the same stack
             return False
 
         if not self.board[old_pos]:  # If the old stack is empty, invalid move
@@ -78,6 +81,24 @@ class Board:
         else:
             return False
 
+    def enumerate_valid_moves(self, player):
+        # Returns a list of valid move tuples of the form [(x, y)] for given player
+        avail_moves = []
+
+        for pos_x in self.board:
+            if not self.board[pos_x]:
+                continue
+
+            curr_color = self.board[pos_x][-1][0]
+            if curr_color != player:
+                continue
+
+            for pos_y in self.board:
+                if self.can_move(pos_x, pos_y):
+                    avail_moves.append((pos_x, pos_y))
+
+        return avail_moves
+
 
 if __name__ == '__main__':
     b = Board(4)
@@ -105,3 +126,9 @@ if __name__ == '__main__':
     b.make_move((4,  4), (0, 1))  # Invalid
     r.draw_board(b)
     sleep(1)
+
+    # enumerate possible_moves
+    white_moves = b.enumerate_valid_moves('white')
+    black_moves = b.enumerate_valid_moves('black')
+    print(white_moves)
+    print(black_moves)

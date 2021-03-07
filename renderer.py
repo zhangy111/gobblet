@@ -1,6 +1,5 @@
 import pygame
 
-
 class Renderer:
 
     GRAY = (200, 200, 200)
@@ -19,25 +18,25 @@ class Renderer:
 
     def draw_grid(self, board):
         pygame.display.flip()  # refresh buffer
-        gap = self.screen_width // board.size
+        gap = self.screen_width // (board.size + 2)
 
         # draw grid
         x = 0
         y = 0
-        for i in range(board.size):
+        for i in range(1, board.size + 2):
             x = i * gap
-            pygame.draw.line(self.screen, self.GRAY, (x, 0),
-                             (x, self.screen_width), 3)
-            pygame.draw.line(self.screen, self.GRAY, (0, x),
-                             (self.screen_width, x), 3)
+            pygame.draw.line(self.screen, self.GRAY, (x, gap), (x, self.screen_width - gap), 3)
+            pygame.draw.line(self.screen, self.GRAY, (gap, x), (self.screen_width - gap, x), 3)
 
     def draw_pieces(self, board):
+        pygame.display.flip()  # refresh buffer
         # add pieces
-        gap = self.screen_width // board.size
+        gap = self.screen_width // (board.size + 2)
         for pos, stack in board.board.items():
-            if stack is None:
+            if len(stack) == 0:
                 continue
-            circle_center = tuple(gap * i - gap//2 for i in pos)
+            print(pos, stack)
+            circle_center = tuple(gap * (i+1) - gap//2 for i in pos)
             for piece in stack:
                 circle_color = self.WHITE if piece[0] == 'white' else self.BLACK
                 radius = (piece[1] / board.size) * (gap // 3)
@@ -46,6 +45,7 @@ class Renderer:
         pygame.display.flip()
 
     def draw_board(self, board):
+        self.screen.fill((0,0,0))
         self.draw_grid(board)
         self.draw_pieces(board)
 
