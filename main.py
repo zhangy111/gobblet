@@ -22,4 +22,5 @@ if __name__ == '__main__':
     
     tournament = Tournament(all_game_strategies, get_initial_board_states)
     best_strategy = tournament.runRoundRobin()
-    print(best_strategy)
+    print(f'Best strategy index: {best_strategy}')
+    all_game_strategies[best_strategy].pretty_print()
