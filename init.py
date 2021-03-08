@@ -32,12 +32,22 @@ class BoardInitializer:
         return board
 
     def __call__(self, board):
-        self.call_method(board)
+        return self.call_method(board)
+
+
+def get_initial_board_states():
+    b = Board(4)
+    o = BoardInitializer('empty')
+    r = BoardInitializer('random')
+
+    opening_states = [o(b) for i in range(3)] # 3 Opening board states
+    mid_game_states = [r(b) for i in range(10)] # 10 mid_game board states
+
+    # TODO
+    # Need end-game states
+
+    return opening_states + mid_game_states
 
 if __name__ == '__main__':
-    I = BoardInitializer('random')
-    b = Board(4)
-    I(b) 
-    r = Renderer(512)
-    r.draw_board(b)
-    sleep(2)
+    l = get_initial_board_states()
+    print(l)
