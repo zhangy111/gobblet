@@ -6,7 +6,12 @@ class GameStrategy:
 
     def __init__(self, scoring_strategy, search_depth=2, strategy_type='minimax', L=4):
         self.get_score = scoring_strategy
+        self.strategy_type = strategy_type
         self.search_depth = search_depth
+
+    def pretty_print(self):
+        print('Scoring strat', self.get_score.__name__)
+        print('Search strat', self.strategy_type)
 
     def find_best_move(self, board, player_color, normalized_strat=False):
         self.player_color = player_color
