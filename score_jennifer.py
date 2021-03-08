@@ -30,7 +30,7 @@ class ScoringStrategy:
             return self.all_strats
         return self.scoring_strat(*args, **kwargs)
 
-@ScoringStrategy
+# @ScoringStrategy
 def random_score(board, *args, **kwargs):
     """
     :param board: Board Object
@@ -43,7 +43,7 @@ def random_score(board, *args, **kwargs):
     return score
 
 # @ScoringStrategy
-def linarow_score(board, player_color, L, *args, **kwargs):
+def linarow_score(board, player_color, L=4, *args, **kwargs):
     """
     :param player_color: "white" or "black"
     :param board: Board object
@@ -59,10 +59,14 @@ def linarow_score(board, player_color, L, *args, **kwargs):
         isVert = [0, 0]
         for k in range (1, board.size+1):
             # get top piece
-            if I_m.get((j, k)) is not None:
+            if len(I_m.get((j, k))) > 0:
                 pieces = I_m.get((j, k))
                 pieces.sort(key=lambda x: x[1], reverse=True)
-                topcolor, topsize = pieces[0]
+                try:
+                    topcolor, topsize = pieces[0]
+                except:
+                    print(pieces)
+                    exit()
                 if topcolor == player_color:
                     isVert = list(map(add, [1, 0], isVert))
                     isHoriz[k-1] = list(map(add, [1, 0], isHoriz[k-1]))
@@ -141,7 +145,15 @@ def linarow_score(board, player_color, L, *args, **kwargs):
 # assert(linarow_score('black', b, 3) == 100)
 # assert(linarow_score('black', b, 2) == 100)
 
-def consecutive_score(board, player_color, L, *args, **kwargs):
+@ScoringStrategy
+def agg_linarow_score(board, player_color, L=4, *args, **kwargs):
+    agg_score = 0
+    for i in range(L):
+        agg_score += (i**2) * linarow_score(board, player_color, i)
+
+    return agg_score
+
+def consecutive_score(board, player_color, L=4, *args, **kwargs):
     """
     :param player_color: "white" or "black"
     :param board: Board object
@@ -156,7 +168,7 @@ def consecutive_score(board, player_color, L, *args, **kwargs):
         for start in range(1, board.size + 3 - L):
             consecCt = 0
             for k in range(start, min(start + L, board.size+1)):
-                if I_m.get((j, k)) is not None:
+                if len(I_m.get((j, k))) > 0:
                     pieces = I_m.get((j, k))
                     pieces.sort(key=lambda x: x[1], reverse=True)
                     topcolor, topsize = pieces[0]
@@ -170,7 +182,7 @@ def consecutive_score(board, player_color, L, *args, **kwargs):
         for start in range(1, board.size + 3 - L):
             consecCt = 0
             for j in range(start, min(start + L, board.size+1)):
-                if I_m.get((j, k)) is not None:
+                if len(I_m.get((j, k))) > 0:
                     pieces = I_m.get((j, k))
                     pieces.sort(key=lambda x: x[1], reverse=True)
                     topcolor, topsize = pieces[0]
@@ -186,7 +198,7 @@ def consecutive_score(board, player_color, L, *args, **kwargs):
         diag2 = 0
         # check positive diagonal
         for m in range(start, min(start + L, board.size+1)):
-            if I_m.get((m, m)) is not None:
+            if len(I_m.get((m, m))) > 0:
                 pieces = I_m.get((m, m))
                 pieces.sort(key=lambda x: x[1], reverse=True)
                 topcolor, topsize = pieces[0]
@@ -194,7 +206,7 @@ def consecutive_score(board, player_color, L, *args, **kwargs):
                     diag1 += 1
 
             # check negative diagonal
-            if I_m.get((m, board.size+1-m)) is not None:
+            if len(I_m.get((m, board.size+1-m))) > 0:
                 pieces = I_m.get((m, board.size+1-m))
                 pieces.sort(key=lambda x: x[1], reverse=True)
                 topcolor, topsize = pieces[0]

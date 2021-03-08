@@ -19,7 +19,7 @@ from renderer import Renderer
 def get_all_scoring_functions():
     return
 
-@ScoringStrategy
+# @ScoringStrategy
 def chess_like_score(board, player_color, piece_value=None, *args, **kwargs):
     """
     :param player_color: "white" or "black"
@@ -48,7 +48,7 @@ def chess_like_score(board, player_color, piece_value=None, *args, **kwargs):
     return score
 
 
-# @ScoringStrategy
+@ScoringStrategy
 def value_map_score(board, player_color, piece_value=None, diag_weight=1, 
                     *args, **kwargs):
     """
@@ -93,7 +93,7 @@ def value_map_score(board, player_color, piece_value=None, diag_weight=1,
 
 
 # @ScoringStrategy
-def combo_score(board, player_color, L, piece_value=None, diag_weight=1, 
+def combo_score(board, player_color, L=4, piece_value=None, diag_weight=1, 
                     score_weight=None, *args, **kwargs):
     """
     :param player_color: "white" or "black"
@@ -103,19 +103,18 @@ def combo_score(board, player_color, L, piece_value=None, diag_weight=1,
     :param diag_weight: Additional scoring weight applied to diagonal spaces
     :return: score
     """
-    I_m = board.board
     score = 0
     
     if score_weight is None:
         score_weight = {'random': 1, 'linarow': 1, 'consecutive': 1, 
                          'freetomove': 1, 'chesslike': 1, 'valuemap': 1}
 
-    score += random_score(I_m) * score_weight['random']
-    score += linarow_score(I_m, player_color, L) * score_weight['linarow']
-    score += consecutive_score(I_m, player_color, L) * score_weight['consecutive']
-    score += freetomove_score(I_m, player_color) * score_weight['freetomove']
-    score += chess_like_score(I_m, player_color) * score_weight['chesslike']
-    score += value_map_score(I_m, player_color) * score_weight['valuemap']
+    score += random_score(board) * score_weight['random']
+    score += linarow_score(board, player_color, L) * score_weight['linarow']
+    score += consecutive_score(board, player_color, L) * score_weight['consecutive']
+    # score += freetomove_score(board, player_color) * score_weight['freetomove']
+    score += chess_like_score(board, player_color) * score_weight['chesslike']
+    score += value_map_score(board, player_color) * score_weight['valuemap']
     
     return score
 

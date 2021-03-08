@@ -1,11 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
-"""
-Created on Fri Mar  5 00:16:40 2021
-
-@author: henry
-
-"""
 from time import sleep
 from board import Board
 from search import GameStrategy
@@ -26,7 +19,7 @@ class Game:
     p2_search_strategy = None
     r = None
     render = False
-    sleep_param = 0.01 
+    sleep_param = 0.1
 
     def __init__(self, p1_search_strategy, p2_search_strategy, max_turns=50, 
                  p1_ai=True, p2_ai=True, board=None, board_size=4, 

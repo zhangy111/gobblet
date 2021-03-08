@@ -41,14 +41,14 @@ def get_initial_board_states():
     o = BoardInitializer('empty')
     r = BoardInitializer('random')
 
-    opening_states = [o(copy.deepcopy(b)) for i in range(3)] # 3 Opening board states
-    mid_game_states = [r(copy.deepcopy(b)) for i in range(10)] # 10 mid_game board states
+    opening_states = [o(copy.deepcopy(b)) for i in range(1)] # 3 Opening board states
+    mid_game_states = [r(copy.deepcopy(b)) for i in range(4)] # 10 mid_game board states
 
     # TODO
     # Need end-game states
 
     # return opening_states + mid_game_states
-    return opening_states
+    return opening_states 
 
 if __name__ == '__main__':
     l = get_initial_board_states()
