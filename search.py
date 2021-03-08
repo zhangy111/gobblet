@@ -4,14 +4,15 @@ from board import Board
 
 class SearchStrategy:
 
-    def __init__(self, scoring_strategy, player_color, L):
+    def __init__(self, scoring_strategy, search_depth=2, L=4):
         self.get_score = scoring_strategy
+        self.search_depth = search_depth
+
+    def find_best_move(self, board, player_color, normalized_strat=False):
         self.player_color = player_color
         self.opp_color = 'white' if player_color == 'black' else 'black'
-
-    def find_best_move(self, board, search_depth=2, normalized_strat=False):
         board = copy.deepcopy(board)
-        best_move, minimax_val = self._minimax(board, search_depth, self.player_color) 
+        best_move, minimax_val = self._minimax(board, self.search_depth, self.player_color) 
         # best_move, minimax_val = self._alphabeta(board, search_depth, -1e6, 1e6, self.player_color) 
         return best_move
 
