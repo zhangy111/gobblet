@@ -48,8 +48,8 @@ if __name__ == "__main__":
     from search import GameStrategy
     from score_jennifer import random_score
 
-    s1 = GameStrategy(random_score, 'white', 4)
-    s2 = GameStrategy(random_score, 'black', 4)
+    s1 = GameStrategy(random_score)
+    s2 = GameStrategy(random_score)
 
     num_configs = 1
     start_configs = []
