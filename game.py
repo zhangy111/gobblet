@@ -26,7 +26,7 @@ class Game:
     p2_search_strategy = None
     
     def __init__(self, p1_search_strategy, p2_search_strategy, max_turns=50, 
-                 p1_ai=True, p2_ai=True, 
+                 p1_ai=True, p2_ai=True, board=None,
                  board_size=4, *args, **kwargs):
         '''
         Set up the game
@@ -36,7 +36,10 @@ class Game:
         self.max_turns = max_turns
         self.player1_is_ai = p1_ai
         self.player2_is_ai = p2_ai
-        self.b = Board(board_size)
+        if board is not None:
+            self.b = board
+        else:
+            self.b = Board(board_size)
         self.p1_search_strategy = p1_search_strategy
         self.p2_search_strategy = p2_search_strategy
         
@@ -186,30 +189,30 @@ class Game:
             return -1
         return 0
     
-    
-# testing positive diagonal
-s1 = SearchStrategy(random_score, 'white', 4)
-s2 = SearchStrategy(random_score, 'black', 4)
-g = Game(s1, s2)
-b = g.b
-N = b.size + 1
-b.make_move((0,1), (1,1))
-b.make_move((N,1), (1,4))
-b.make_move((0,1), (2,2))
-b.make_move((N,1), (2,3))
-b.make_move((0,1), (3,3))
-b.make_move((N,1), (3,2))
-b.make_move((0,1), (4,4))
-assert(g.check_win_loss('white') == 'win')
-# # testing negative diagonal
-b.make_move((N,1), (4,1))
-b.make_move((4,4), (4,3))
-assert(g.check_win_loss('black') == 'win')
+if __name__ == '__main__':    
+    # testing positive diagonal
+    s1 = SearchStrategy(random_score, 'white', 4)
+    s2 = SearchStrategy(random_score, 'black', 4)
+    g = Game(s1, s2)
+    b = g.b
+    N = b.size + 1
+    b.make_move((0,1), (1,1))
+    b.make_move((N,1), (1,4))
+    b.make_move((0,1), (2,2))
+    b.make_move((N,1), (2,3))
+    b.make_move((0,1), (3,3))
+    b.make_move((N,1), (3,2))
+    b.make_move((0,1), (4,4))
+    assert(g.check_win_loss('white') == 'win')
+    # # testing negative diagonal
+    b.make_move((N,1), (4,1))
+    b.make_move((4,4), (4,3))
+    assert(g.check_win_loss('black') == 'win')
 
-# testing AI make move
-r = Renderer(512)
-g = Game(s1, s2)
-b = g.b
-# g.run_game()
-g.make_move(1) # player 1 'white' moves
-g.make_move(2) # player 2 'black' moves is causing an error: p2_search_strategy.find_best_move() returned None
+    # testing AI make move
+    r = Renderer(512)
+    g = Game(s1, s2)
+    b = g.b
+    # g.run_game()
+    g.make_move(1) # player 1 'white' moves
+    g.make_move(2) # player 2 'black' moves is causing an error: p2_search_strategy.find_best_move() returned None
