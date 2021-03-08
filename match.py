@@ -38,7 +38,7 @@ class Match:
             # print(board2.enumerate_valid_moves('white'))
             game2 = Game(self.p2_strategy, self.p1_strategy, board=board2, render=self.render)
             result = game2.run_game()
-            cum_result += result
+            cum_result -= result
         return cum_result / (2 * len(self.start_configs))
 
 
