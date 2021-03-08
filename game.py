@@ -160,7 +160,7 @@ class Game:
             state = self.check_win_loss(self.player2_color)
             if state != 'na':
                 return_val = self.end_game(self.player2_color, state)
-                return return_val
+                return -return_val
             self.make_move(1) # player 1 makes move
             self.num_turns += 1
             state = self.check_win_loss(self.player1_color)
