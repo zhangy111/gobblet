@@ -1,6 +1,8 @@
 from score_henry import *
 from score_jennifer import *
 from search import *
+from tournament import Tournament
+from init import get_initial_board_states
 
 if __name__ == '__main__':
 
@@ -14,3 +16,10 @@ if __name__ == '__main__':
             all_game_strategies.append(g)
 
     print(all_game_strategies)
+
+
+    initial_states = get_initial_board_states()
+    
+    tournament = Tournament(all_game_strategies, get_initial_board_states)
+    best_strategy = tournament.runRoundRobin()
+    print(best_strategy)
