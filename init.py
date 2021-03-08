@@ -17,7 +17,7 @@ class BoardInitializer:
         return board
 
 
-    def random_board(self, board, n_moves=5):
+    def random_board(self, board, n_moves=6):
         # Todo: Add clause to stop when the game is finished
         curr_color = board.next_turn
         for i in range(n_moves):
