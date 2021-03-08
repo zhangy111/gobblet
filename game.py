@@ -6,10 +6,12 @@ Created on Fri Mar  5 00:16:40 2021
 @author: henry
 
 """
+from time import sleep
 from board import Board
 from search import SearchStrategy
 from score_jennifer import *
 from score_henry import *
+from renderer import Renderer
 
 class Game:
     
@@ -120,14 +122,22 @@ class Game:
         
         # get optimal move from search strategy if player is AI
         if player == 1 and self.player1_is_ai:
+            r.draw_board(self.b)
+            sleep(0.5)
             opt_move = self.p1_search_strategy.find_best_move(self.b)
             print(opt_move)
             self.b.make_move(opt_move[0], opt_move[1])
+            r.draw_board(self.b)
+            sleep(0.5)
             
         elif player == 2 and self.player2_is_ai:
+            r.draw_board(self.b)
+            sleep(0.5)
             opt_move = self.p2_search_strategy.find_best_move(self.b)
             print(opt_move)
             self.b.make_move(opt_move[0], opt_move[1])
+            r.draw_board(self.b)
+            sleep(0.5)
             
         else:
             print("Are you moving it from the starting stack? If so, enter 0 for the below.")
@@ -191,12 +201,13 @@ b.make_move((0,1), (3,3))
 b.make_move((N,1), (3,2))
 b.make_move((0,1), (4,4))
 assert(g.check_win_loss('white') == 'win')
-# testing negative diagonal
+# # testing negative diagonal
 b.make_move((N,1), (4,1))
 b.make_move((4,4), (4,3))
 assert(g.check_win_loss('black') == 'win')
 
 # testing AI make move
+r = Renderer(512)
 g = Game(s1, s2)
 b = g.b
 # g.run_game()

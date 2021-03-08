@@ -11,8 +11,8 @@ class SearchStrategy:
 
     def find_best_move(self, board, search_depth=2, normalized_strat=False):
         board = copy.deepcopy(board)
-        # best_move, minimax_val = self._minimax(board, search_depth, self.player_color) 
-        best_move, minimax_val = self._alphabeta(board, search_depth, -1e6, 1e6, self.player_color) 
+        best_move, minimax_val = self._minimax(board, search_depth, self.player_color) 
+        # best_move, minimax_val = self._alphabeta(board, search_depth, -1e6, 1e6, self.player_color) 
         return best_move
 
     def _minimax(self, board, search_depth, curr_player):
@@ -25,11 +25,11 @@ class SearchStrategy:
             best_move = None             
             
             for move in avail_moves:
-                board = copy.deepcopy(board)
-                board.make_move(*move) # Should avoid this
-                move, val = self._minimax(board, search_depth - 1, self.opp_color)
-                if val > max_val:
-                    max_val = val
+                board_copy = copy.deepcopy(board)
+                board_copy.make_move(*move) # Should avoid this
+                next_move, next_val = self._minimax(board_copy, search_depth - 1, self.opp_color)
+                if next_val > max_val:
+                    max_val = next_val
                     best_move = move
 
             return best_move, max_val
@@ -39,11 +39,11 @@ class SearchStrategy:
             best_move = None             
             
             for move in avail_moves:
-                board = copy.deepcopy(board)
-                board.make_move(*move) # Should avoid this
-                move, val = self._minimax(board, search_depth - 1, self.player_color)
-                if val < min_val:
-                    min_val = val
+                board_copy = copy.deepcopy(board)
+                board_copy.make_move(*move) # Should avoid this
+                next_move, next_val = self._minimax(board_copy, search_depth - 1, self.player_color)
+                if next_val < min_val:
+                    min_val = next_val
                     best_move = move
 
             return best_move, min_val
