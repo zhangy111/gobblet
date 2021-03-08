@@ -8,6 +8,8 @@ Created on Fri Mar  5 00:16:40 2021
 """
 from board import Board
 from search import SearchStrategy
+from score_jennifer import *
+from score_henry import *
 
 class Game:
     
@@ -18,8 +20,12 @@ class Game:
     player1_color = "white"
     player2_color = "black"
     b = None
+    p1_search_strategy = None
+    p2_search_strategy = None
     
-    def __init__(self, max_turns=50, p1_ai=True, p2_ai=True, board_size=4):
+    def __init__(self, p1_search_strategy, p2_search_strategy, max_turns=50, 
+                 p1_ai=True, p2_ai=True, 
+                 board_size=4, *args, **kwargs):
         '''
         Set up the game
         Pre-condition: max_turns >= 0, board_size >0
@@ -29,6 +35,8 @@ class Game:
         self.player1_is_ai = p1_ai
         self.player2_is_ai = p2_ai
         self.b = Board(board_size)
+        self.p1_search_strategy = p1_search_strategy
+        self.p2_search_strategy = p2_search_strategy
         
         
     def check_win_loss(self, player_color):
@@ -109,34 +117,26 @@ class Game:
         Pre-condition: player == 1 or 2
         Post-condition: the player has executed their move
         '''
-        piece = None
-        old_position = None
-        new_position = None
         
+        # get optimal move from search strategy if player is AI
         if player == 1 and self.player1_is_ai:
-            pass
-            # TODO - get optimal move from search strategy
-            # this entails data about the piece, old position, and new position
-            # old position == None means it's from the starting stack
+            opt_move = self.p1_search_strategy.find_best_move(self.b)
+            print(opt_move)
+            self.b.make_move(opt_move[0], opt_move[1])
+            
         elif player == 2 and self.player2_is_ai:
-            pass
-            # TODO - get optimal move from search strategy
-            # this entails data about the piece, old position, and new position
-            # old position == None means it's from the starting stack
+            opt_move = self.p2_search_strategy.find_best_move(self.b)
+            print(opt_move)
+            self.b.make_move(opt_move[0], opt_move[1])
+            
         else:
-            piece_size = input("Size of the piece you want to move (enter a number): ")
-            if player == 1:
-                piece = (self.player1_color, int(piece_size)) # make piece tuple
-            else:
-                piece = (self.player2_color, int(piece_size)) # make piece tuple
             print("Are you moving it from the starting stack? If so, enter 0 for the below.")
-            old_position_row = input("Where is this piece from? Enter the row: ")
-            old_position_col = input("Where is this piece from? Enter the column: ")
-            old_pos = (int(old_position_row), int(old_position_col))
-            new_position_row = input("Where is this piece going? Enter the row: ")
-            new_position_col = input("Where is this piece going? Enter the column: ")
-            new_pos = (int(new_position_row), int(new_position_col))
-            print("You want to move", piece, old_position, new_position)
+            old_pos_row = input("Where is this piece from? Enter the row: ")
+            old_pos_col = input("Where is this piece from? Enter the column: ")
+            old_pos = (int(old_pos_row), int(old_pos_col))
+            new_pos_row = input("Where is this piece going? Enter the row: ")
+            new_pos_col = input("Where is this piece going? Enter the column: ")
+            new_pos = (int(new_pos_row), int(new_pos_col))
             self.b.make_move(old_pos, new_pos)
                
     
@@ -178,7 +178,9 @@ class Game:
     
     
 # testing positive diagonal
-g = Game()
+s1 = SearchStrategy(random_score, 'white', 4)
+s2 = SearchStrategy(random_score, 'black', 4)
+g = Game(s1, s2)
 b = g.b
 N = b.size + 1
 b.make_move((0,1), (1,1))
@@ -193,3 +195,10 @@ assert(g.check_win_loss('white') == 'win')
 b.make_move((N,1), (4,1))
 b.make_move((4,4), (4,3))
 assert(g.check_win_loss('black') == 'win')
+
+# testing AI make move
+g = Game(s1, s2)
+b = g.b
+# g.run_game()
+g.make_move(1) # player 1 'white' moves
+g.make_move(2) # player 2 'black' moves is causing an error: p2_search_strategy.find_best_move() returned None
