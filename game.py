@@ -143,8 +143,8 @@ class Game:
     
 if __name__ == '__main__':    
     # testing positive diagonal
-    s1 = GameStrategy(random_score, 'white', 4)
-    s2 = GameStrategy(random_score, 'black', 4)
+    s1 = GameStrategy(random_score, 2, 4)
+    s2 = GameStrategy(random_score, 2, 4)
     g = Game(s1, s2)
     b = g.b
     N = b.size + 1
