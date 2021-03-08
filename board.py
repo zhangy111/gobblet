@@ -100,6 +100,10 @@ class Board:
 
         return avail_moves
 
+    def print(self):
+        for position, stack in self.board.items():
+            print(f'{position}: {stack}')
+
 
 if __name__ == '__main__':
     b = Board(4)
