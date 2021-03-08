@@ -10,7 +10,7 @@ class Board:
     free_pieces = None
     size = 0
 
-    def __init__(self, board_size):
+    def __init__(self, board_size=4):
         '''
         Set up the board and initialize every space to None
         Pre-condition: board_size > 0
