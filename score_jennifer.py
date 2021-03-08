@@ -22,7 +22,8 @@ class ScoringStrategy:
     all_strats = []
     def __init__(self, strat):
         self.scoring_strat = strat
-        self.all_strats.append(strat)
+        if self.scoring_strat.__name__ != 'get_all_scoring_functions':
+            self.all_strats.append(strat)
 
     def __call__(self, *args, **kwargs):
         if self.scoring_strat.__name__ == 'get_all_scoring_functions':
