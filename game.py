@@ -8,7 +8,7 @@ Created on Fri Mar  5 00:16:40 2021
 """
 from time import sleep
 from board import Board
-from search import SearchStrategy
+from search import GameStrategy
 from score_jennifer import *
 from score_henry import *
 from renderer import Renderer
@@ -143,8 +143,8 @@ class Game:
     
 if __name__ == '__main__':    
     # testing positive diagonal
-    s1 = SearchStrategy(random_score, 'white', 4)
-    s2 = SearchStrategy(random_score, 'black', 4)
+    s1 = GameStrategy(random_score, 'white', 4)
+    s2 = GameStrategy(random_score, 'black', 4)
     g = Game(s1, s2)
     b = g.b
     N = b.size + 1
