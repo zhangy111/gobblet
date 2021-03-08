@@ -24,7 +24,7 @@ class GameStrategy:
     def _minimax(self, board, search_depth, curr_player):
         avail_moves = board.enumerate_valid_moves(curr_player)
         if search_depth == 0:
-            return (avail_moves[0], self.get_score(board, self.player_color, board.size)) # Change board.size to L
+            return (avail_moves[0], self.get_score(board, self.player_color)) # Change board.size to L
 
         if curr_player == self.player_color: # Maximizing player
             max_val = -1e6 

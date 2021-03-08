@@ -42,7 +42,7 @@ def random_score(board, *args, **kwargs):
         score += rand.randint(0, 100)
     return score
 
-@ScoringStrategy
+# @ScoringStrategy
 def linarow_score(board, player_color, L, *args, **kwargs):
     """
     :param player_color: "white" or "black"

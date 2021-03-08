@@ -32,10 +32,10 @@ class Match:
             game1 = Game(self.p1_strategy, self.p2_strategy, board=board1, render=self.render)
             result = game1.run_game()
             cum_result += result
-            print()
+            # print()
             board2 = copy.deepcopy(start_config)
-            board2.print()
-            print(board2.enumerate_valid_moves('white'))
+            # board2.print()
+            # print(board2.enumerate_valid_moves('white'))
             game2 = Game(self.p2_strategy, self.p1_strategy, board=board2, render=self.render)
             result = game2.run_game()
             cum_result += result

@@ -15,12 +15,10 @@ if __name__ == '__main__':
             g = GameStrategy(score, search_depth=2, strategy_type=search)
             all_game_strategies.append(g)
 
-    print(all_game_strategies)
-
-
     initial_states = get_initial_board_states()
-    
-    tournament = Tournament(all_game_strategies, get_initial_board_states)
+
+    tournament = Tournament(all_game_strategies, initial_states, render=True)
     best_strategy = tournament.runRoundRobin()
+
     print(f'Best strategy index: {best_strategy}')
     all_game_strategies[best_strategy].pretty_print()

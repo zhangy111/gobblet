@@ -26,7 +26,8 @@ class Game:
     p2_search_strategy = None
     r = None
     render = False
-    
+    sleep_param = 0.01 
+
     def __init__(self, p1_search_strategy, p2_search_strategy, max_turns=50, 
                  p1_ai=True, p2_ai=True, board=None, board_size=4, 
                  render=False, renderSize=512, *args, **kwargs):
@@ -75,24 +76,24 @@ class Game:
         if player == 1 and self.player1_is_ai:
             if self.render: 
                 self.r.draw_board(self.b)
-                sleep(0.5)
+                sleep(self.sleep_param)
             opt_move = self.p1_search_strategy.find_best_move(self.b, self.player1_color)
             print(opt_move)
             self.b.make_move(opt_move[0], opt_move[1])
             if self.render: 
                 self.r.draw_board(self.b)
-                sleep(0.5)
+                sleep(self.sleep_param)
             
         elif player == 2 and self.player2_is_ai:
             if self.render: 
                 self.r.draw_board(self.b)
-                sleep(0.5)
+                sleep(self.sleep_param)
             opt_move = self.p2_search_strategy.find_best_move(self.b, self.player2_color)
             print(opt_move)
             self.b.make_move(opt_move[0], opt_move[1])
             if self.render: 
                 self.r.draw_board(self.b)
-                sleep(0.5)
+                sleep(self.sleep_param)
             
         else:
             print("Are you moving it from the starting stack? If so, enter 0 for the below.")

@@ -48,7 +48,7 @@ def chess_like_score(board, player_color, piece_value=None, *args, **kwargs):
     return score
 
 
-@ScoringStrategy
+# @ScoringStrategy
 def value_map_score(board, player_color, piece_value=None, diag_weight=1, 
                     *args, **kwargs):
     """
@@ -92,7 +92,7 @@ def value_map_score(board, player_color, piece_value=None, diag_weight=1,
     return score
 
 
-@ScoringStrategy
+# @ScoringStrategy
 def combo_score(board, player_color, L, piece_value=None, diag_weight=1, 
                     score_weight=None, *args, **kwargs):
     """
