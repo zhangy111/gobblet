@@ -61,65 +61,7 @@ class Game:
         if self.num_turns == self.max_turns:
             return 'draw'
         
-        I_m = self.b.board
-        win_flag = False
-        loss_flag = False
-        is_horiz = [0, 0, 0, 0] # tracking counts for horizontal columns
-        is_diag = [0, 0] # [positive slope diagonal, negative slope diagonal]
-         
-        for j in range (1, self.b.size + 1): # j = [a, b, c, d] as described in notation
-             is_vert = 0 # tracking number of pieces of a player's color in a vertical column
-             
-             for k in range (1, self.b.size + 1):
-                 if len(I_m[(j,k)]) == 0:
-                     continue
-                 top_piece = I_m[(j,k)][-1] # get the largest piece
-                 if top_piece[0] == player_color:
-                     is_vert += 1
-                     is_horiz[k-1] += 1
-                 else:
-                     is_vert -= 1
-                     is_horiz[k-1] -= 1
-                     
-                 if j == k: # check if we are in a negative slope diagonal space 
-                    if top_piece[0] == player_color:
-                         is_diag[0] += 1
-                    else:
-                         is_diag[0] -= 1
-                 if j + k == 5: # check if we are in a positive slope diagonal space 
-                    if top_piece[0] == player_color:
-                         is_diag[1] += 1
-                    else:
-                         is_diag[1] -= 1
-                         
-             if is_vert == 4: # player 4-in-a-row 
-                 win_flag = True
-             if is_vert == -4: # opponent 4-in-a-row
-                 loss_flag = True
-             
-        for elem in is_horiz: # tally up score for horizontal rows 
-            if elem == 4:
-                 win_flag = True
-            if elem == -4:
-                 loss_flag = True
-
-        for elem in is_diag: # tally up score for diagonals
-            if elem == 4:
-                 win_flag = True
-            if elem == -4:
-                 loss_flag = True
-
-        # case when the move resulted in both player and opponent 4-in-a-row
-        if win_flag and loss_flag:
-            return 'draw'
-        
-        if win_flag:
-            return 'win'
-        
-        if loss_flag:
-            return 'loss'
-        
-        return 'na'
+        return self.b.check_win_loss(player_color)
     
     
     def make_move(self, player):
@@ -134,7 +76,7 @@ class Game:
             if self.render: 
                 self.r.draw_board(self.b)
                 sleep(0.5)
-            opt_move = self.p1_search_strategy.find_best_move(self.b)
+            opt_move = self.p1_search_strategy.find_best_move(self.b, self.player1_color)
             print(opt_move)
             self.b.make_move(opt_move[0], opt_move[1])
             if self.render: 
@@ -145,7 +87,7 @@ class Game:
             if self.render: 
                 self.r.draw_board(self.b)
                 sleep(0.5)
-            opt_move = self.p2_search_strategy.find_best_move(self.b)
+            opt_move = self.p2_search_strategy.find_best_move(self.b, self.player2_color)
             print(opt_move)
             self.b.make_move(opt_move[0], opt_move[1])
             if self.render: 

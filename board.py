@@ -103,6 +103,76 @@ class Board:
     def print(self):
         for position, stack in self.board.items():
             print(f'{position}: {stack}')
+            
+            
+    def check_win_loss(self, player_color):
+        '''
+        Game ending condition checks
+        Pre-condition: game board b where each board space is sorted s.t. 
+                        the last element of the stack is the largest of the stack
+        Post-condition: returns game state
+        '''
+        # this function uses indexing starting at 1 due to notation decisions
+
+        I_m = self.board
+        win_flag = False
+        loss_flag = False
+        is_horiz = [0, 0, 0, 0] # tracking counts for horizontal columns
+        is_diag = [0, 0] # [positive slope diagonal, negative slope diagonal]
+         
+        for j in range (1, self.size + 1): # j = [a, b, c, d] as described in notation
+             is_vert = 0 # tracking number of pieces of a player's color in a vertical column
+             
+             for k in range (1, self.size + 1):
+                 if len(I_m[(j,k)]) == 0:
+                     continue
+                 top_piece = I_m[(j,k)][-1] # get the largest piece
+                 if top_piece[0] == player_color:
+                     is_vert += 1
+                     is_horiz[k-1] += 1
+                 else:
+                     is_vert -= 1
+                     is_horiz[k-1] -= 1
+                     
+                 if j == k: # check if we are in a negative slope diagonal space 
+                    if top_piece[0] == player_color:
+                         is_diag[0] += 1
+                    else:
+                         is_diag[0] -= 1
+                 if j + k == 5: # check if we are in a positive slope diagonal space 
+                    if top_piece[0] == player_color:
+                         is_diag[1] += 1
+                    else:
+                         is_diag[1] -= 1
+                         
+             if is_vert == 4: # player 4-in-a-row 
+                 win_flag = True
+             if is_vert == -4: # opponent 4-in-a-row
+                 loss_flag = True
+             
+        for elem in is_horiz: # tally up score for horizontal rows 
+            if elem == 4:
+                 win_flag = True
+            if elem == -4:
+                 loss_flag = True
+
+        for elem in is_diag: # tally up score for diagonals
+            if elem == 4:
+                 win_flag = True
+            if elem == -4:
+                 loss_flag = True
+
+        # case when the move resulted in both player and opponent 4-in-a-row
+        if win_flag and loss_flag:
+            return 'draw'
+        
+        if win_flag:
+            return 'win'
+        
+        if loss_flag:
+            return 'loss'
+        
+        return 'na'
 
 
 if __name__ == '__main__':
