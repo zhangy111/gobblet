@@ -2,7 +2,7 @@ import copy
 from score_jennifer import *
 from board import Board
 
-class SearchStrategy:
+class GameStrategy:
 
     def __init__(self, scoring_strategy, search_depth=2, L=4):
         self.get_score = scoring_strategy
@@ -91,6 +91,6 @@ class SearchStrategy:
             return best_move, min_val
 
 if __name__ == '__main__':
-    S = SearchStrategy(random_score, 'white', 4)
+    S = GameStrategy(random_score, 'white', 4)
     b = Board(4)
     print(S.find_best_move(b))
