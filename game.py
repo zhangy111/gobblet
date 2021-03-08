@@ -24,10 +24,12 @@ class Game:
     b = None
     p1_search_strategy = None
     p2_search_strategy = None
+    r = None
+    render = False
     
     def __init__(self, p1_search_strategy, p2_search_strategy, max_turns=50, 
-                 p1_ai=True, p2_ai=True, board=None,
-                 board_size=4, *args, **kwargs):
+                 p1_ai=True, p2_ai=True, board=None, board_size=4, 
+                 render=False, renderSize=512, *args, **kwargs):
         '''
         Set up the game
         Pre-condition: max_turns >= 0, board_size >0
@@ -42,6 +44,10 @@ class Game:
             self.b = Board(board_size)
         self.p1_search_strategy = p1_search_strategy
         self.p2_search_strategy = p2_search_strategy
+
+        self.render = render
+        if render:
+            self.r = Renderer(renderSize)
         
         
     def check_win_loss(self, player_color):
@@ -91,16 +97,16 @@ class Game:
              if is_vert == -4: # opponent 4-in-a-row
                  loss_flag = True
              
-        for p in is_horiz: # tally up score for horizontal rows 
-            if is_horiz[p] == 4:
+        for elem in is_horiz: # tally up score for horizontal rows 
+            if elem == 4:
                  win_flag = True
-            if is_horiz[p] == -4:
+            if elem == -4:
                  loss_flag = True
 
-        for q in [0, 1]: # tally up score for diagonals
-            if is_diag[q] == 4:
+        for elem in is_diag: # tally up score for diagonals
+            if elem == 4:
                  win_flag = True
-            if is_diag[q] == -4:
+            if elem == -4:
                  loss_flag = True
 
         # case when the move resulted in both player and opponent 4-in-a-row
@@ -125,22 +131,26 @@ class Game:
         
         # get optimal move from search strategy if player is AI
         if player == 1 and self.player1_is_ai:
-            r.draw_board(self.b)
-            sleep(0.5)
+            if self.render: 
+                self.r.draw_board(self.b)
+                sleep(0.5)
             opt_move = self.p1_search_strategy.find_best_move(self.b)
             print(opt_move)
             self.b.make_move(opt_move[0], opt_move[1])
-            r.draw_board(self.b)
-            sleep(0.5)
+            if self.render: 
+                self.r.draw_board(self.b)
+                sleep(0.5)
             
         elif player == 2 and self.player2_is_ai:
-            r.draw_board(self.b)
-            sleep(0.5)
+            if self.render: 
+                self.r.draw_board(self.b)
+                sleep(0.5)
             opt_move = self.p2_search_strategy.find_best_move(self.b)
             print(opt_move)
             self.b.make_move(opt_move[0], opt_move[1])
-            r.draw_board(self.b)
-            sleep(0.5)
+            if self.render: 
+                self.r.draw_board(self.b)
+                sleep(0.5)
             
         else:
             print("Are you moving it from the starting stack? If so, enter 0 for the below.")
@@ -210,8 +220,8 @@ if __name__ == '__main__':
     assert(g.check_win_loss('black') == 'win')
 
     # testing AI make move
-    r = Renderer(512)
-    g = Game(s1, s2)
+    # r = Renderer(512)
+    g = Game(s1, s2, render=True)
     b = g.b
     # g.run_game()
     g.make_move(1) # player 1 'white' moves
