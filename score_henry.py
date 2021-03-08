@@ -16,6 +16,10 @@ from renderer import Renderer
 
 
 @ScoringStrategy
+def get_all_scoring_functions():
+    return
+
+@ScoringStrategy
 def chess_like_score(board, player_color, piece_value=None, *args, **kwargs):
     """
     :param player_color: "white" or "black"
@@ -127,21 +131,24 @@ if __name__ == "__main__":
     b.make_move((0,1), (3,3))
     b.make_move((N,1), (3,4))
     b.make_move((0,1), (4,4))
-    assert(value_map_score(b, 'white') == 11)
-    assert(value_map_score(b, 'black') == -11)
-    # testing negative diagonal
-    b.make_move((N,1), (3,2))
-    assert(value_map_score(b, 'white') == 9)
-    assert(value_map_score(b, 'black') == -9)
-    assert(chess_like_score(b, 'white') == 0)
-    assert(chess_like_score(b, 'black') == 0)
-    # testing moving (white, 4) from a diagonal into a nondiagonal
-    b.make_move((1,1), (1,3))
-    assert(value_map_score(b, 'white') == 5)
-    assert(chess_like_score(b, 'white') == 0)
-    # testing 2-piece stack
-    b.make_move((1,2), (2,2))
-    assert(value_map_score(b, 'white') == 1)
-    assert(chess_like_score(b, 'white') == 0)
-    # R = Renderer(512)
-    # R.draw_board(b)
+
+    print(get_all_scoring_functions())
+
+    # assert(value_map_score(b, 'white') == 11)
+    # assert(value_map_score(b, 'black') == -11)
+    # # testing negative diagonal
+    # b.make_move((N,1), (3,2))
+    # assert(value_map_score(b, 'white') == 9)
+    # assert(value_map_score(b, 'black') == -9)
+    # assert(chess_like_score(b, 'white') == 0)
+    # assert(chess_like_score(b, 'black') == 0)
+    # # testing moving (white, 4) from a diagonal into a nondiagonal
+    # b.make_move((1,1), (1,3))
+    # assert(value_map_score(b, 'white') == 5)
+    # assert(chess_like_score(b, 'white') == 0)
+    # # testing 2-piece stack
+    # b.make_move((1,2), (2,2))
+    # assert(value_map_score(b, 'white') == 1)
+    # assert(chess_like_score(b, 'white') == 0)
+    # # R = Renderer(512)
+    # # R.draw_board(b)

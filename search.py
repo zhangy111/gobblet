@@ -4,7 +4,7 @@ from board import Board
 
 class GameStrategy:
 
-    def __init__(self, scoring_strategy, search_depth=2, L=4):
+    def __init__(self, scoring_strategy, search_depth=2, strategy_type='minimax', L=4):
         self.get_score = scoring_strategy
         self.search_depth = search_depth
 
