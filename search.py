@@ -1,6 +1,10 @@
+import pygame
 import copy
+from time import sleep
+import random
 from score_jennifer import *
 from board import Board
+from renderer import Renderer
 
 class GameStrategy:
 
@@ -17,9 +21,77 @@ class GameStrategy:
         self.player_color = player_color
         self.opp_color = 'white' if player_color == 'black' else 'black'
         board = copy.deepcopy(board)
-        best_move, minimax_val = self._minimax(board, self.search_depth, self.player_color) 
-        # best_move, minimax_val = self._alphabeta(board, search_depth, -1e6, 1e6, self.player_color) 
+
+        if self.strategy_type == 'minimax':
+            best_move, best_val = self._minimax(board, self.search_depth, self.player_color) 
+        elif self.strategy_type == 'montecarlo':
+            best_move, best_val = self._monte_carlo_ts(board, self.player_color, 16) 
+        # else:
+            # best_move, best_val = self._alphabeta(board, search_depth, -1e6, 1e6, self.player_color) 
         return best_move
+
+    def _monte_carlo_ts(self, board, curr_player, search_depth, n_games=15):
+        avail_moves = board.enumerate_valid_moves(curr_player)
+
+        # Prune similar moves
+        side_stack_id = 0 if curr_player == 'white' else board.size + 1
+        remove_ids = []
+        if len(board.board[(side_stack_id, 2)]) == len(board.board[(side_stack_id, 1)]):
+            remove_ids.append(2) 
+        if len(board.board[(side_stack_id, 3)]) == len(board.board[(side_stack_id, 2)]) or\
+                len(board.board[(side_stack_id, 3)]) == len(board.board[(side_stack_id, 1)]):
+            remove_ids.append(3)
+        
+        best_score = -1e6
+        best_move = None
+
+        for move in avail_moves:
+            old_pos = move[0]
+
+            if old_pos[0] == side_stack_id and old_pos[1] in remove_ids:
+                continue
+
+            curr_move_score = 0
+            next_board = copy.deepcopy(board)
+            next_board.make_move(*move)
+
+            for i in range(n_games):
+                curr_move_score += self._play_till_winner(next_board, curr_player, search_depth)
+            if curr_move_score > best_score:
+                best_score = curr_move_score
+                best_move = move
+
+        return best_move, best_score
+
+    def _play_till_winner(self, board, start_player, search_depth):
+        n_moves = search_depth
+
+        # since starting with next state
+        curr_color = 'white' if start_player == 'black' else 'black'
+
+        for i in range(n_moves):
+            result = board.check_win_loss(start_player)
+            if result == 'win':
+                return 1
+            elif result == 'loss':
+                return -1
+            elif result == 'draw':
+                return 0
+
+            avail_moves = board.enumerate_valid_moves(curr_color)
+            rand_move = random.choice(avail_moves)
+            board.make_move(*rand_move)
+            curr_color = 'white' if curr_color == 'black' else 'black'
+
+        opp_player = 'white' if start_player == 'black' else 'black'
+
+        # If more than n_moves are played check the value of the state
+        # Assigning less than 1 to reflect less confidence in heuristics
+        if self.get_score(board, start_player) > self.get_score(board, opp_player):
+            return 0.1
+        else:
+            return -0.1 
+
 
     def _minimax(self, board, search_depth, curr_player):
         avail_moves = board.enumerate_valid_moves(curr_player)

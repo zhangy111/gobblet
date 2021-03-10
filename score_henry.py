@@ -1,11 +1,5 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""
-Created on Sun Mar  7 17:16:36 2021
-
-@author: henry
-"""
-
 from board import Board
 from score_jennifer import ScoringStrategy
 from score_jennifer import random_score
