@@ -18,9 +18,6 @@ from board import Board
 import random as rand
 from operator import add
 
-import sys, os
-sys.path.append('/Users/Jennifer/repos/gobblet')
-
 class ScoringStrategy:
     all_strats = []
     def __init__(self, strat):
@@ -63,13 +60,8 @@ def linarow_score(board, player_color, L=4, *args, **kwargs):
         for k in range (1, board.size+1):
             # get top piece
             if len(I_m.get((j, k))) > 0:
-                pieces = I_m.get((j, k))
-                pieces.sort(key=lambda x: x[1], reverse=True)
-                # try:
-                topcolor, topsize = pieces[0]
-                # except:
-                #     print(pieces)
-                #     exit()
+                topcolor, topsize = I_m.get((j, k))[-1]
+                assert(I_m == board.board)
                 if topcolor == player_color:
                     isVert = list(map(add, [1, 0], isVert))
                     isHoriz[k-1] = list(map(add, [1, 0], isHoriz[k-1]))
@@ -114,7 +106,7 @@ def linarow_score(board, player_color, L=4, *args, **kwargs):
 # assert(linarow_score('black', b, 4) == 100)
 # assert(linarow_score('black', b, 3) == 100)
 # assert(linarow_score('black', b, 2) == 100)
-#
+
 # # testing horizontal rows
 # b = Board(4)
 # b.place_piece(('black', 3), (1,1))
@@ -171,9 +163,7 @@ def consecutive_score(board, player_color, L=4, *args, **kwargs):
             consecCt = 0
             for k in range(start, min(start + L, board.size+1)):
                 if len(I_m.get((j, k))) > 0:
-                    pieces = I_m.get((j, k))
-                    pieces.sort(key=lambda x: x[1], reverse=True)
-                    topcolor, topsize = pieces[0]
+                    topcolor, topsize = I_m.get((j, k))[-1]
                     if topcolor == player_color:
                         consecCt += 1
             if consecCt >= L:
@@ -185,9 +175,7 @@ def consecutive_score(board, player_color, L=4, *args, **kwargs):
             consecCt = 0
             for j in range(start, min(start + L, board.size+1)):
                 if len(I_m.get((j, k))) > 0:
-                    pieces = I_m.get((j, k))
-                    pieces.sort(key=lambda x: x[1], reverse=True)
-                    topcolor, topsize = pieces[0]
+                    topcolor, topsize = I_m.get((j, k))[-1]
                     if topcolor == player_color:
                         consecCt += 1
             if consecCt >= L:
@@ -201,17 +189,13 @@ def consecutive_score(board, player_color, L=4, *args, **kwargs):
         # check positive diagonal
         for m in range(start, min(start + L, board.size+1)):
             if len(I_m.get((m, m))) > 0:
-                pieces = I_m.get((m, m))
-                pieces.sort(key=lambda x: x[1], reverse=True)
-                topcolor, topsize = pieces[0]
+                topcolor, topsize = I_m.get((m, m))[-1]
                 if topcolor == player_color:
                     diag1 += 1
 
             # check negative diagonal
             if len(I_m.get((m, board.size+1-m))) > 0:
-                pieces = I_m.get((m, board.size+1-m))
-                pieces.sort(key=lambda x: x[1], reverse=True)
-                topcolor, topsize = pieces[0]
+                topcolor, topsize = I_m.get((m, board.size+1-m))[-1]
                 if topcolor == player_color:
                     diag2 += 1
 
