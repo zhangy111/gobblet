@@ -18,6 +18,9 @@ from board import Board
 import random as rand
 from operator import add
 
+import sys, os
+sys.path.append('/Users/Jennifer/repos/gobblet')
+
 class ScoringStrategy:
     all_strats = []
     def __init__(self, strat):
@@ -62,11 +65,11 @@ def linarow_score(board, player_color, L=4, *args, **kwargs):
             if len(I_m.get((j, k))) > 0:
                 pieces = I_m.get((j, k))
                 pieces.sort(key=lambda x: x[1], reverse=True)
-                try:
-                    topcolor, topsize = pieces[0]
-                except:
-                    print(pieces)
-                    exit()
+                # try:
+                topcolor, topsize = pieces[0]
+                # except:
+                #     print(pieces)
+                #     exit()
                 if topcolor == player_color:
                     isVert = list(map(add, [1, 0], isVert))
                     isHoriz[k-1] = list(map(add, [1, 0], isHoriz[k-1]))
@@ -145,7 +148,6 @@ def linarow_score(board, player_color, L=4, *args, **kwargs):
 # assert(linarow_score('black', b, 3) == 100)
 # assert(linarow_score('black', b, 2) == 100)
 
-@ScoringStrategy
 def agg_linarow_score(board, player_color, L=4, *args, **kwargs):
     agg_score = 0
     for i in range(L):
@@ -264,8 +266,59 @@ def consecutive_score(board, player_color, L=4, *args, **kwargs):
 # assert(consecutive_score('black', b, 3) == 200)
 # assert(consecutive_score('black', b, 2) == 300)
 
+def agg_consec_score(board, player_color, *args, **kwargs):
+    agg_score = 0
+    for i in range(board.size):
+        agg_score += (i**2) * consecutive_score(board, player_color, i)
+    return agg_score
 
-#
+@ScoringStrategy
+def agg_linarowconsec_score(board, player_color, *args, **kwargs):
+    return agg_consec_score(board, player_color) + agg_linarow_score(board, player_color)
+
+def comb(board, player_color, *args, **kwargs):
+    return agg_consec_score(board, player_color) + 2*agg_linarow_score(board, player_color)
+
+# @ScoringStrategy
+def combo2(board, player_color, *args, **kwargs):
+    return chess_like_score(board, player_color) + value_map_score(board, player_color)
+
+def remove_top_layer(I_m, board_size=4, *args, **kwargs):
+    """
+    Helper function to remove top layer of pieces from the board
+    :param board:
+    :return:
+    """
+    for j in range(1, board_size+1):
+        for k in range(1, board_size+1):
+            if len(I_m.get((j, k))) > 0:
+                I_m[(j, k)].pop()
+    return I_m
+
+def num_pieces(board, *args, **kwargs):
+    I_m = board.board
+    pieces = 0
+    for elt in I_m.values():
+        pieces += len(elt)
+    return pieces
+
+
+def combo3(board, player_color, *args, **kwargs):
+    """
+    strategy calculates agg_consec and agg_linarow for all levels of the board
+    :param board:
+    :param player_color:
+    :param args:
+    :param kwargs:
+    :return:
+    """
+    I_m = board.board
+    agg_score = 0
+    for i in range(board.size):
+        agg_score += agg_consec_score(board, player_color) + agg_linarow_score(board, player_color)
+        I_m = remove_top_layer(I_m, board_size = board.size)
+    return agg_score
+
 def isGameOver(board, *args, **kwargs):
     """
     Helper function for freetomove_score()
@@ -289,41 +342,17 @@ def freetomove_score(board, player_color, *args, **kwargs):
     :param board: Board object
     :return: score
     """
-    I_m = board.board
     score = 0
-    if player_color == "black":
-        not_player_color = "white"
-    else:
-        not_player_color = "black"
-
-    pieces = []  # tuples of (size, number of that piece available) for the player_color
-    for (color, size) in board.free_pieces.keys():
-        if color == player_color:
-            pieces.append((size, board.free_pieces[(color, size)]))
-    total = 0
-    for (size, num) in pieces:
-        total += num
-    if total >= 3:  # STACKS = 3
-        score += 100 * min(total, 3)
-
-    for (j, k) in I_m.keys():
-
-        if I_m.get((j, k)) is not None:
-            pieces = I_m.get((j, k))
-            pieces.sort(key=lambda x: x[1], reverse=True)
-            topcolor, topsize = pieces[0]
-
-            if topcolor == player_color:
-                board_new = board
-                board_new.remove_piece((topcolor, topsize), (j, k))
-                result = isGameOver(board_new)
-                if result == player_color or result == -1:
-                    score += 100
-                elif result == not_player_color:
-                    score -= 100
-                else: # tie
-                    score += 50
-
+    moves = board.enumerate_valid_moves("player_color")
+    for (old_pos, new_pos) in moves:
+        board.make_move(old_pos, new_pos)
+        result = isGameOver(board_new)
+        if result == player_color or result == -1:
+            score += 100
+        elif result == not_player_color:
+            score -= 100
+        else: # tie
+            score += 50
     return score
 
 # testing
@@ -331,3 +360,31 @@ def freetomove_score(board, player_color, *args, **kwargs):
 # assert(freetomove_score('black', b) == 300)
 # b.place_piece(('black', 4), (1,1))
 # assert(freetomove_score('black', b) == 400)
+
+def combo4(board, player_color, *args, **kwargs):
+    aggscore = agg_linarowconsec_score(board, player_color)
+    aggscore += freetomove_score(board, player_color)
+    return aggscore
+
+def combo5(board, player_color, *args, **kwargs):
+    return combo4(board, player_color) + combo_score(board, player_color)
+
+def combo6(board, player_color, *args, **kwargs):
+    return combo2(board, player_color) + combo4(board, player_color) + combo_score(board, player_color)
+
+def combo7(board, player_color, *args, **kwargs):
+    agg_score = chess_like_score(board, player_color) * agg_linarowconsec_score(board, player_color)
+    agg_score += value_map_score(board, player_color) * agg_linarowconsec_score(board, player_color)
+    return agg_score
+
+def combo8(board, player_color, *args, **kwargs):
+    aggscore = freetomove_score(board, player_color) * agg_linarowconsec_score(board, player_color)
+    return combo7(board, player_color) + aggscore
+
+def combo9(board, player_color, *args, **kwargs):
+    aggscore = freetomove_score(board, player_color) * value_map_score(board, player_color)
+    return combo7(board, player_color) + aggscore
+
+def combo10(board, player_color, *args, **kwargs):
+    aggscore = freetomove_score(board, player_color) * chess_like_score(board, player_color)
+    return combo7(board, player_color) + aggscore

@@ -47,8 +47,6 @@ def chess_like_score(board, player_color, piece_value=None, *args, **kwargs):
                         score -= piece_value[piece]
     return score
 
-
-@ScoringStrategy
 def value_map_score(board, player_color, piece_value=None, diag_weight=1, 
                     *args, **kwargs):
     """
@@ -79,7 +77,7 @@ def value_map_score(board, player_color, piece_value=None, diag_weight=1,
             if j == k or k == board.size + 1 - j:
                 is_diag = 1
                 
-            if I_m.get((j, k)) is not None:
+            if len(I_m.get((j, k))) > 0:
                 pieces = I_m.get((j, k))
                 #print(pieces)
                 
