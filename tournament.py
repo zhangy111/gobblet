@@ -1,4 +1,6 @@
 from match import Match
+import math
+import random
 
 class Tournament:
     strategies = None
@@ -27,8 +29,30 @@ class Tournament:
                 cumResults[i] += result
                 # invert result for player 2
                 cumResults[j] += -result
+        print(cumResults)
         return cumResults.index(max(cumResults))
 
     def runSingleElimation(self):
-        pass
+        curStrategies = self.strategies.copy()
+        while len(curStrategies) > 1:
+            newStrategies = []
+            while len(curStrategies) >= 2:
+                s1 = random.choice(curStrategies)
+                curStrategies.remove(s1)
+                s2 = random.choice(curStrategies)
+                curStrategies.remove(s1)
+
+                match = Match(s1, s2, self.start_configs, render=self.render)
+                result = match.run()
+                # ties arbitrarily go to player 2
+                if result > 0:
+                    newStrategies.append(s1)
+                else:
+                    newStrategies.append(s2)
+            curStrategies = newStrategies
+
+        return self.strategies.index(curStrategies[0])
+        
+        
+
 
