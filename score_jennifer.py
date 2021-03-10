@@ -286,7 +286,7 @@ def num_pieces(board, *args, **kwargs):
         pieces += len(elt)
     return pieces
 
-
+import copy
 def combo3(board, player_color, *args, **kwargs):
     """
     strategy calculates agg_consec and agg_linarow for all levels of the board
@@ -300,7 +300,7 @@ def combo3(board, player_color, *args, **kwargs):
     agg_score = 0
     for i in range(board.size):
         agg_score += agg_consec_score(board, player_color) + agg_linarow_score(board, player_color)
-        I_m = remove_top_layer(I_m, board_size = board.size)
+        I_m = remove_top_layer(copy.deepcopy(I_m), board_size = board.size)
     return agg_score
 
 def isGameOver(board, *args, **kwargs):
