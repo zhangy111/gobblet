@@ -7,7 +7,7 @@ from init import get_initial_board_states
 if __name__ == '__main__':
 
     scoring_strats = get_all_scoring_functions()
-    search_strats = ['minimax']
+    search_strats = ['montecarlo']
     
     all_game_strategies = []
     for search in search_strats:

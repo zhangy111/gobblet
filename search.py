@@ -53,7 +53,7 @@ class GameStrategy:
 
             curr_move_score = 0
             next_board = copy.deepcopy(board)
-            next_board.make_move(*move)
+            next_board.make_move(move[0], move[1])
 
             for i in range(n_games):
                 curr_move_score += self._play_till_winner(next_board, curr_player, search_depth)
@@ -80,7 +80,7 @@ class GameStrategy:
 
             avail_moves = board.enumerate_valid_moves(curr_color)
             rand_move = random.choice(avail_moves)
-            board.make_move(*rand_move)
+            board.make_move(rand_move[0], rand_move[1])
             curr_color = 'white' if curr_color == 'black' else 'black'
 
         opp_player = 'white' if start_player == 'black' else 'black'

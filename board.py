@@ -1,12 +1,10 @@
 import pygame
+import numpy as np
 from time import sleep
 from renderer import Renderer
 
 
 class Board:
-    # Todo: Add method to check if the game is at a terminal node
-
-    board = None
     free_pieces = None
     size = 0
 
@@ -16,6 +14,7 @@ class Board:
         Pre-condition: board_size > 0
         Post-condition: board and free_pieces initialized
         '''
+        self.board = None
 
         rows = [i for i in range(1, board_size+1)]
         cols = [j for j in range(1, board_size+1)]  # could also use letters
@@ -42,6 +41,10 @@ class Board:
         
         self.next_turn = 'white' # Next player's color
 
+        # memory to check win-loss quickly
+        self.white_board = np.zeros([self.size, self.size])
+        self.black_board = np.zeros([self.size, self.size])
+
         print("Welcome to Gobblet.")
 
     def can_move(self, old_pos, new_pos):
@@ -51,7 +54,7 @@ class Board:
         if old_pos == new_pos:  # Can't place on the same stack
             return False
 
-        if not self.board[old_pos]:  # If the old stack is empty, invalid move
+        if len(self.board[old_pos]) ==  0:  # If the old stack is empty, invalid move
             return False
         
         if self.board[old_pos][-1][0] != self.next_turn:
@@ -61,7 +64,7 @@ class Board:
         if new_pos[0] == 0 or new_pos[0] == self.size + 1:
             return False
 
-        if not self.board[new_pos]:  # If the new stack is empty, can move
+        if len(self.board[new_pos]) == 0:  # If the new stack is empty, can move
             return True
 
         # Neither of the two stacks are empty. Check the order.
@@ -75,9 +78,11 @@ class Board:
 
     def make_move(self, old_pos, new_pos):
         if self.can_move(old_pos, new_pos):
-            top_piece = self.board[old_pos].pop()
+            top_piece = self.board[old_pos][-1]
+            self.board[old_pos] = self.board[old_pos][:-1]
             self.board[new_pos].append(top_piece)
-            self.next_turn = 'white' if self.next_turn == 'black' else 'black'
+
+            self.next_turn = 'white' if self.next_turn == 'black' else 'black' # Update next palyer
             return True
         else:
             return False
@@ -106,79 +111,41 @@ class Board:
             
             
     def check_win_loss(self, player_color):
-        '''
-        Game ending condition checks
-        Pre-condition: game board b where each board space is sorted s.t. 
-                        the last element of the stack is the largest of the stack
-        Post-condition: returns game state
-        '''
-        # this function uses indexing starting at 1 due to notation decisions
 
-        I_m = self.board
-        win_flag = False
-        loss_flag = False
-        is_horiz = [0, 0, 0, 0] # tracking counts for horizontal columns
-        is_diag = [0, 0] # [positive slope diagonal, negative slope diagonal]
-         
-        for j in range (1, self.size + 1): # j = [a, b, c, d] as described in notation
-             is_vert = 0 # tracking number of pieces of a player's color in a vertical column
-             
-             for k in range (1, self.size + 1):
-                 if len(I_m[(j,k)]) == 0:
-                     continue
-                 pieces = I_m.get((j, k))
-                 pieces.sort(key=lambda x: x[1], reverse=True)
-                 try:
-                    topcolor, topsize = pieces[0]
-                 except:
-                    print(pieces)
-                    exit()
-                 if topcolor == player_color:
-                     is_vert += 1
-                     is_horiz[k-1] += 1
-                 else:
-                     is_vert -= 1
-                     is_horiz[k-1] -= 1
-                     
-                 if j == k: # check if we are in a negative slope diagonal space 
-                    if topcolor == player_color:
-                         is_diag[0] += 1
+        self.white_board = np.zeros([self.size, self.size])
+        self.black_board = np.zeros([self.size, self.size])
+        for i in range(1, self.size+1):
+            for j in range(1, self.size+1):
+                if len(self.board[(i, j)]) > 0:
+                    top_piece = self.board[(i, j)][-1]
+                    if top_piece[0] == 'white':
+                        self.white_board[i-1, j-1] = 1
                     else:
-                         is_diag[0] -= 1
-                 if j + k == 5: # check if we are in a positive slope diagonal space 
-                    if topcolor == player_color:
-                         is_diag[1] += 1
-                    else:
-                         is_diag[1] -= 1
-                         
-             if is_vert == 4: # player 4-in-a-row 
-                 win_flag = True
-             if is_vert == -4: # opponent 4-in-a-row
-                 loss_flag = True
-             
-        for elem in is_horiz: # tally up score for horizontal rows 
-            if elem == 4:
-                 win_flag = True
-            if elem == -4:
-                 loss_flag = True
+                        self.black_board[i-1, j-1] = 1
 
-        for elem in is_diag: # tally up score for diagonals
-            if elem == 4:
-                 win_flag = True
-            if elem == -4:
-                 loss_flag = True
+        white_win = False
+        black_win = False
 
-        # case when the move resulted in both player and opponent 4-in-a-row
-        if win_flag and loss_flag:
+        if np.any(np.sum(self.white_board, axis=0) == self.size) or \
+            np.any(np.sum(self.white_board, axis=1) == self.size) or \
+            sum(self.white_board[i, self.size-i-1] for i in range(self.size)) == self.size or \
+            sum(self.white_board[i, i] for i in range(self.size)) == self.size:
+                white_win = True
+
+        if np.any(np.sum(self.black_board, axis=0) == self.size) or \
+            np.any(np.sum(self.black_board, axis=1) == self.size) or \
+            sum(self.black_board[i, self.size-i-1] for i in range(self.size)) == self.size or \
+            sum(self.black_board[i, i] for i in range(self.size)) == self.size:
+                black_win = True
+
+        if white_win and black_win:
             return 'draw'
-        
-        if win_flag:
-            return 'win'
-        
-        if loss_flag:
-            return 'loss'
-        
-        return 'na'
+        elif white_win:
+            return 'win' if player_color == 'white' else 'loss'
+        elif black_win:
+            return 'win' if player_color == 'black' else 'loss'
+        else:
+            return 'na'
 
 
 if __name__ == '__main__':
@@ -189,29 +156,41 @@ if __name__ == '__main__':
     # print(b.next_turn)
     # Move from side-stack to board
     r.draw_board(b)
-    b.make_move((0, 1), (1, 1))
+    # b.make_move((0, 1), (1, 1))
+    # b.make_move((0, 3), (2, 3))
+    b.make_move((0, 3), (2, 1))
+    b.make_move((N, 3), (2, 1))
+    r.draw_board(b)
+    sleep(0.5)
+    b.make_move((5, 3), (3, 4))
+    r.draw_board(b)
+    sleep(0.5)
+    b.make_move((2, 3), (1, 1))
+    r.draw_board(b)
+    sleep(0.5)
+    b.make_move((5, 2), (2, 3))
     # print(b.next_turn)
-    b.make_move((0, 4), (1, 1))
+    # b.make_move((0, 4), (1, 1))
     r.draw_board(b)
     sleep(0.5)
-    b.make_move((N, 1), (2, 2))
-    r.draw_board(b)
-    sleep(0.5)
-    b.make_move((0, 1), (2, 3))
-    r.draw_board(b)
+    # b.make_move((N, 1), (2, 2))
+    # r.draw_board(b)
+    # sleep(0.5)
+    # b.make_move((0, 1), (2, 3))
+    # r.draw_board(b)
 
-    # Move from board space to board space
-    sleep(0.5)
-    b.make_move((2,  3), (4, 4)) # invalid
-    r.draw_board(b)
+    # # Move from board space to board space
+    # sleep(0.5)
+    # b.make_move((2,  3), (4, 4)) # invalid
+    # r.draw_board(b)
 
-    # Move from board space to side stack
-    b.make_move((4,  4), (0, 1))  # Invalid
-    r.draw_board(b)
+    # # Move from board space to side stack
+    # b.make_move((4,  4), (0, 1))  # Invalid
+    # r.draw_board(b)
     sleep(1)
 
     # enumerate possible_moves
-    white_moves = b.enumerate_valid_moves('white')
-    black_moves = b.enumerate_valid_moves('black')
-    print(white_moves)
-    print(black_moves)
+    # white_moves = b.enumerate_valid_moves('white')
+    # black_moves = b.enumerate_valid_moves('black')
+    # print(white_moves)
+    # print(black_moves)
