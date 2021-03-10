@@ -136,11 +136,10 @@ class Game:
         return 0
     
 if __name__ == '__main__':    
-    b = Board(4)
     r = Renderer(512)
     # testing positive diagonal
-    s1 = GameStrategy(random_score, 2, 4)
-    s2 = GameStrategy(random_score, 2, 4)
+    s1 = GameStrategy(random_score, 2)
+    s2 = GameStrategy(random_score, 2)
     g = Game(s1, s2)
     b = g.b
     N = b.size + 1
@@ -159,6 +158,35 @@ if __name__ == '__main__':
     b.make_move((N,2), (1,2))
     b.make_move((0,2), (4,1))
     assert(g.check_win_loss('black') == 'na')
+    
+    # testing horizontal & vertical
+    g = Game(s1, s2)
+    b = g.b
+    N = b.size + 1
+    r.draw_board(b)
+    b.make_move((0,1), (1,1))
+    b.make_move((N,1), (4,1))
+    b.make_move((0,1), (1,2))
+    b.make_move((N,1), (3,1))
+    b.make_move((0,1), (1,3))
+    b.make_move((N,1), (2,1))
+    b.make_move((0,1), (3,4))
+    assert(g.check_win_loss('white') == 'na')
+    b.make_move((N,1), (4,4))
+    assert(g.check_win_loss('black') == 'na')
+    b.make_move((0,2), (1,4))
+    assert(g.check_win_loss('white') == 'win')
+    b.make_move((N,2), (1,3))
+    assert(g.check_win_loss('black') == 'na')
+    b.make_move((1,1), (4,2))
+    r.draw_board(b)
+    sleep(3)
+    assert(g.check_win_loss('white') == 'na')
+    b.make_move((N,3), (1,1))
+    r.draw_board(b)
+    sleep(3)
+    assert(g.check_win_loss('black') == 'win')
+    
 
     # testing AI make move
     # r = Renderer(512)
@@ -167,3 +195,5 @@ if __name__ == '__main__':
     # g.run_game()
     g.make_move(1) # player 1 'white' moves
     g.make_move(2) # player 2 'black' moves
+
+    
