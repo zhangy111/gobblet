@@ -202,8 +202,6 @@ def consecutive_score(board, player_color, L=4, *args, **kwargs):
         for m in range(start, min(start + L, board.size+1)):
             if len(I_m.get((m, m))) > 0:
                 pieces = I_m.get((m, m))
-
-                # Why would you ever change the board state in a scoring function?!
                 pieces.sort(key=lambda x: x[1], reverse=True)
                 topcolor, topsize = pieces[0]
                 if topcolor == player_color:
