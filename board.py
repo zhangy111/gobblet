@@ -126,8 +126,14 @@ class Board:
              for k in range (1, self.size + 1):
                  if len(I_m[(j,k)]) == 0:
                      continue
-                 top_piece = I_m[(j,k)][-1] # get the largest piece
-                 if top_piece[0] == player_color:
+                 pieces = I_m.get((j, k))
+                 pieces.sort(key=lambda x: x[1], reverse=True)
+                 try:
+                    topcolor, topsize = pieces[0]
+                 except:
+                    print(pieces)
+                    exit()
+                 if topcolor == player_color:
                      is_vert += 1
                      is_horiz[k-1] += 1
                  else:
@@ -135,12 +141,12 @@ class Board:
                      is_horiz[k-1] -= 1
                      
                  if j == k: # check if we are in a negative slope diagonal space 
-                    if top_piece[0] == player_color:
+                    if topcolor == player_color:
                          is_diag[0] += 1
                     else:
                          is_diag[0] -= 1
                  if j + k == 5: # check if we are in a positive slope diagonal space 
-                    if top_piece[0] == player_color:
+                    if topcolor == player_color:
                          is_diag[1] += 1
                     else:
                          is_diag[1] -= 1

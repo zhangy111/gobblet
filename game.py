@@ -136,6 +136,8 @@ class Game:
         return 0
     
 if __name__ == '__main__':    
+    b = Board(4)
+    r = Renderer(512)
     # testing positive diagonal
     s1 = GameStrategy(random_score, 2, 4)
     s2 = GameStrategy(random_score, 2, 4)
@@ -154,6 +156,9 @@ if __name__ == '__main__':
     b.make_move((N,1), (4,1))
     b.make_move((4,4), (4,3))
     assert(g.check_win_loss('black') == 'win')
+    b.make_move((N,2), (1,2))
+    b.make_move((0,2), (4,1))
+    assert(g.check_win_loss('black') == 'na')
 
     # testing AI make move
     # r = Renderer(512)
@@ -161,4 +166,4 @@ if __name__ == '__main__':
     b = g.b
     # g.run_game()
     g.make_move(1) # player 1 'white' moves
-    g.make_move(2) # player 2 'black' moves is causing an error: p2_search_strategy.find_best_move() returned None
+    g.make_move(2) # player 2 'black' moves
