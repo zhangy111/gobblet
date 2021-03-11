@@ -142,7 +142,7 @@ def linarow_score(board, player_color, L=4, *args, **kwargs):
 
 def agg_linarow_score(board, player_color, L=4, *args, **kwargs):
     agg_score = 0
-    for i in range(L):
+    for i in range(L+1):
         agg_score += (i**2) * linarow_score(board, player_color, i)
 
     return agg_score
@@ -252,7 +252,7 @@ def consecutive_score(board, player_color, L=4, *args, **kwargs):
 
 def agg_consec_score(board, player_color, *args, **kwargs):
     agg_score = 0
-    for i in range(board.size):
+    for i in range(board.size+1):
         agg_score += (i**2) * consecutive_score(board, player_color, i)
     return agg_score
 
@@ -298,7 +298,7 @@ def combo3(board, player_color, *args, **kwargs):
     """
     I_m = board.board
     agg_score = 0
-    for i in range(board.size):
+    for i in range(board.size+1):
         agg_score += agg_consec_score(board, player_color) + agg_linarow_score(board, player_color)
         I_m = remove_top_layer(copy.deepcopy(I_m), board_size = board.size)
     return agg_score
