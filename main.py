@@ -12,7 +12,10 @@ if __name__ == '__main__':
     all_game_strategies = []
     for search in search_strats:
         for score in scoring_strats:
-            g = GameStrategy(score, search_depth=1, strategy_type=search)
+            if search == 'minimax':
+                g = GameStrategy(score, search_depth=2, strategy_type=search)
+            elif search == 'montecarlo':
+                g = GameStrategy(score, search_depth=6, strategy_type=search)
             all_game_strategies.append(g)
 
     initial_states = get_initial_board_states()

@@ -28,12 +28,12 @@ class GameStrategy:
         if self.strategy_type == 'minimax':
             best_move, best_val = self._minimax(board, self.search_depth, self.player_color) 
         elif self.strategy_type == 'montecarlo':
-            best_move, best_val = self._monte_carlo_ts(board, self.player_color, 16) 
+            best_move, best_val = self._monte_carlo_ts(board, self.player_color, self.search_depth) 
         # else:
             # best_move, best_val = self._alphabeta(board, search_depth, -1e6, 1e6, self.player_color) 
         return best_move
 
-    def _monte_carlo_ts(self, board, curr_player, search_depth, n_games=15):
+    def _monte_carlo_ts(self, board, curr_player, search_depth, n_games=7):
         s = time()
         avail_moves = board.enumerate_valid_moves(curr_player)
 
@@ -55,11 +55,11 @@ class GameStrategy:
             if old_pos[0] == side_stack_id and old_pos[1] in remove_ids:
                 continue
 
+            n_moves = search_depth
             curr_move_score = 0
-            next_board = copy.deepcopy(board)
-            next_board.make_move(move[0], move[1])
-
             for i in range(n_games):
+                next_board = copy.deepcopy(board)
+                next_board.make_move(move[0], move[1])
                 curr_move_score += self._play_till_winner(next_board, curr_player, search_depth)
             if curr_move_score > best_score:
                 best_score = curr_move_score
@@ -72,10 +72,6 @@ class GameStrategy:
 
     def _play_till_winner(self, board, start_player, search_depth):
         n_moves = search_depth
-        # print(i)
-        r = Renderer(512)
-        r.draw_board(board)
-        sleep(2)
 
         # since starting with next state
         curr_color = 'white' if start_player == 'black' else 'black'
