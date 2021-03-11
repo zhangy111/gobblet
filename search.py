@@ -5,6 +5,7 @@ import random
 from score_jennifer import *
 from board import Board
 from renderer import Renderer
+import glob_vars
 
 class GameStrategy:
 
@@ -32,6 +33,7 @@ class GameStrategy:
 
     def _monte_carlo_ts(self, board, curr_player, search_depth, n_games=15):
         avail_moves = board.enumerate_valid_moves(curr_player)
+        glob_vars.outDegCounts.append(len(avail_moves))
 
         # Prune similar moves
         side_stack_id = 0 if curr_player == 'white' else board.size + 1
@@ -95,6 +97,7 @@ class GameStrategy:
 
     def _minimax(self, board, search_depth, curr_player):
         avail_moves = board.enumerate_valid_moves(curr_player)
+        glob_vars.outDegCounts.append(len(avail_moves))
         if search_depth == 0:
             return (avail_moves[0], self.get_score(board, self.player_color)) # Change board.size to L
 
@@ -128,6 +131,7 @@ class GameStrategy:
 
     def _alphabeta(self, board, search_depth, alpha, beta, curr_player):
         avail_moves = board.enumerate_valid_moves(curr_player)
+        glob_vars.outDegCounts.append(len(avail_moves))
         if search_depth == 0:
             return (avail_moves[0], self.get_score(board, self.player_color, board.size)) # Change board.size to L
 
