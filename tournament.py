@@ -27,7 +27,7 @@ class Tournament:
                 cumResults[i] += result
                 # invert result for player 2
                 cumResults[j] += -result
-        return cumResults.index(max(cumResults))
+        return cumResults, cumResults.index(max(cumResults))
 
     def runSingleElimation(self):
         pass

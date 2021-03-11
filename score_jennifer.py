@@ -142,7 +142,7 @@ def linarow_score(board, player_color, L=4, *args, **kwargs):
 
 def agg_linarow_score(board, player_color, L=4, *args, **kwargs):
     agg_score = 0
-    for i in range(L):
+    for i in range(L + 1):
         agg_score += (i**2) * linarow_score(board, player_color, i)
 
     return agg_score
@@ -205,54 +205,9 @@ def consecutive_score(board, player_color, L=4, *args, **kwargs):
             score += 100
     return score
 
-# # testing
-# # testing vertical columns
-# b = Board(4)
-# b.place_piece(('black', 3), (1,1))
-# b.place_piece(('black', 4), (1,2))
-# b.place_piece(('black', 2), (1,3))
-# b.place_piece(('white', 1), (1,4))
-# b.place_piece(('black', 2), (1,4))
-# assert(consecutive_score('black', b, 4) == 100)
-# assert(consecutive_score('black', b, 3) == 200)
-# assert(consecutive_score('black', b, 2) == 300)
-#
-# # # testing horizontal rows
-# b = Board(4)
-# b.place_piece(('black', 3), (1,1))
-# b.place_piece(('black', 4), (2,1))
-# b.place_piece(('black', 2), (3,1))
-# b.place_piece(('white', 1), (4,1))
-# b.place_piece(('black', 2), (4,1))
-# assert(consecutive_score('black', b, 4) == 100)
-# assert(consecutive_score('black', b, 3) == 200)
-# assert(consecutive_score('black', b, 2) == 300)
-#
-# # # testing positive diagonal
-# b = Board(4)
-# b.place_piece(('black', 3), (1,1))
-# b.place_piece(('black', 4), (2,2))
-# b.place_piece(('black', 2), (3,3))
-# b.place_piece(('white', 1), (4,4))
-# b.place_piece(('black', 2), (4,4))
-# assert(consecutive_score('black', b, 4) == 100)
-# assert(consecutive_score('black', b, 3) == 200)
-# assert(consecutive_score('black', b, 2) == 300)
-#
-# # # testing negative diagonal
-# b = Board(4)
-# b.place_piece(('black', 3), (1,4))
-# b.place_piece(('black', 4), (2,3))
-# b.place_piece(('black', 2), (3,2))
-# b.place_piece(('white', 1), (4,1))
-# b.place_piece(('black', 2), (4,1))
-# assert(consecutive_score('black', b, 4) == 100)
-# assert(consecutive_score('black', b, 3) == 200)
-# assert(consecutive_score('black', b, 2) == 300)
-
 def agg_consec_score(board, player_color, *args, **kwargs):
     agg_score = 0
-    for i in range(board.size):
+    for i in range(board.size + 1):
         agg_score += (i**2) * consecutive_score(board, player_color, i)
     return agg_score
 
