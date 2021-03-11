@@ -34,7 +34,7 @@ class Tournament:
                 matchResults[j][i] = -result
         print(matchResults)
         print(cumResults)
-        return cumResults.index(max(cumResults))
+        return cumResults, cumResults.index(max(cumResults))
 
     def runSingleElimation(self):
         curStrategies = self.strategies.copy()

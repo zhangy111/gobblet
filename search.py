@@ -1,6 +1,7 @@
 import pygame
 import copy
 from time import sleep
+from time import time
 import random
 from score_jennifer import *
 from board import Board
@@ -13,6 +14,8 @@ class GameStrategy:
         self.get_score = scoring_strategy
         self.strategy_type = strategy_type
         self.search_depth = search_depth
+        self.total_time = 0
+        self.total_moves = 0
 
     def pretty_print(self):
         print('Scoring strat', self.get_score.__name__)
@@ -26,12 +29,13 @@ class GameStrategy:
         if self.strategy_type == 'minimax':
             best_move, best_val = self._minimax(board, self.search_depth, self.player_color) 
         elif self.strategy_type == 'montecarlo':
-            best_move, best_val = self._monte_carlo_ts(board, self.player_color, 16) 
+            best_move, best_val = self._monte_carlo_ts(board, self.player_color, self.search_depth) 
         # else:
             # best_move, best_val = self._alphabeta(board, search_depth, -1e6, 1e6, self.player_color) 
         return best_move
 
-    def _monte_carlo_ts(self, board, curr_player, search_depth, n_games=15):
+    def _monte_carlo_ts(self, board, curr_player, search_depth, n_games=7):
+        s = time()
         avail_moves = board.enumerate_valid_moves(curr_player)
         glob_vars.outDegCounts.append(len(avail_moves))
 
@@ -53,16 +57,19 @@ class GameStrategy:
             if old_pos[0] == side_stack_id and old_pos[1] in remove_ids:
                 continue
 
+            n_moves = search_depth
             curr_move_score = 0
-            next_board = copy.deepcopy(board)
-            next_board.make_move(move[0], move[1])
-
             for i in range(n_games):
+                next_board = copy.deepcopy(board)
+                next_board.make_move(move[0], move[1])
                 curr_move_score += self._play_till_winner(next_board, curr_player, search_depth)
             if curr_move_score > best_score:
                 best_score = curr_move_score
                 best_move = move
 
+        e = time()
+        self.total_time += (e - s)
+        self.total_moves += 1
         return best_move, best_score
 
     def _play_till_winner(self, board, start_player, search_depth):
@@ -76,8 +83,16 @@ class GameStrategy:
             if result == 'win':
                 return 1
             elif result == 'loss':
+                # r = Renderer(512)
+                # r.draw_board(board)
+                # sleep(2)
+                # print(i)
                 return -1
             elif result == 'draw':
+                # r = Renderer(512)
+                # r.draw_board(board)
+                # sleep(2)
+                # print(i)
                 return 0
 
             avail_moves = board.enumerate_valid_moves(curr_color)

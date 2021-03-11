@@ -13,7 +13,7 @@ from renderer import Renderer
 def get_all_scoring_functions():
     return
 
-@ScoringStrategy
+# @ScoringStrategy
 def chess_like_score(board, player_color, piece_value=None, *args, **kwargs):
     """
     :param player_color: "white" or "black"
@@ -41,6 +41,7 @@ def chess_like_score(board, player_color, piece_value=None, *args, **kwargs):
                         score -= piece_value[piece]
     return score
 
+# @ScoringStrategy
 def value_map_score(board, player_color, piece_value=None, diag_weight=1, 
                     *args, **kwargs):
     """
