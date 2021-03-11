@@ -1,6 +1,7 @@
 import pygame
 import copy
 from time import sleep
+from time import time
 import random
 from score_jennifer import *
 from board import Board
@@ -12,6 +13,8 @@ class GameStrategy:
         self.get_score = scoring_strategy
         self.strategy_type = strategy_type
         self.search_depth = search_depth
+        self.total_time = 0
+        self.total_moves = 0
 
     def pretty_print(self):
         print('Scoring strat', self.get_score.__name__)
@@ -31,6 +34,7 @@ class GameStrategy:
         return best_move
 
     def _monte_carlo_ts(self, board, curr_player, search_depth, n_games=15):
+        s = time()
         avail_moves = board.enumerate_valid_moves(curr_player)
 
         # Prune similar moves
@@ -61,10 +65,17 @@ class GameStrategy:
                 best_score = curr_move_score
                 best_move = move
 
+        e = time()
+        self.total_time += (e - s)
+        self.total_moves += 1
         return best_move, best_score
 
     def _play_till_winner(self, board, start_player, search_depth):
         n_moves = search_depth
+        # print(i)
+        r = Renderer(512)
+        r.draw_board(board)
+        sleep(2)
 
         # since starting with next state
         curr_color = 'white' if start_player == 'black' else 'black'
@@ -74,8 +85,16 @@ class GameStrategy:
             if result == 'win':
                 return 1
             elif result == 'loss':
+                # r = Renderer(512)
+                # r.draw_board(board)
+                # sleep(2)
+                # print(i)
                 return -1
             elif result == 'draw':
+                # r = Renderer(512)
+                # r.draw_board(board)
+                # sleep(2)
+                # print(i)
                 return 0
 
             avail_moves = board.enumerate_valid_moves(curr_color)

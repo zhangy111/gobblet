@@ -19,11 +19,13 @@ class BoardInitializer:
 
 
     def random_board(self, board, n_moves=6):
+        init_board = copy.deepcopy(board)
         # Todo: Add clause to stop when the game is finished
         curr_color = board.next_turn
         for i in range(n_moves):
             avail_moves = board.enumerate_valid_moves(curr_color)
-
+            if board.check_win_loss('white') != 'na':
+                return self.random_board(init_board, n_moves)
             if not avail_moves:
                 return board
             rand_move = random.choice(avail_moves)
@@ -32,8 +34,8 @@ class BoardInitializer:
 
         return board
 
-    def __call__(self, board):
-        return self.call_method(board)
+    def __call__(self, board, *args, **kwargs):
+        return self.call_method(board, *args, **kwargs)
 
 
 def get_initial_board_states():
@@ -41,14 +43,18 @@ def get_initial_board_states():
     o = BoardInitializer('empty')
     r = BoardInitializer('random')
 
-    opening_states = [o(copy.deepcopy(b)) for i in range(1)] # 3 Opening board states
-    mid_game_states = [r(copy.deepcopy(b)) for i in range(4)] # 10 mid_game board states
+    opening_states = [o(copy.deepcopy(b)) for i in range(10)] # 3 Opening board states
+    mid_game_states = [r(copy.deepcopy(b)) for i in range(30)] # 10 mid_game board states
+    end_game_states = [r(copy.deepcopy(b), n_moves=30) for i in range(30)] # 10 mid_game board states
 
     # TODO
     # Need end-game states
 
     # return opening_states + mid_game_states
-    return opening_states 
+    # return opening_states
+    # return mid_game_states
+    # return end_game_states
+    return opening_states
 
 if __name__ == '__main__':
     l = get_initial_board_states()
