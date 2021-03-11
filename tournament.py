@@ -21,6 +21,7 @@ class Tournament:
          this case)
         '''
         cumResults = [0 for _ in self.strategies]
+        matchResults = [[0 for _ in self.strategies] for _ in self.strategies]
         n = len(self.strategies)
         for i in range(n):
             for j in range(i+1, n):
@@ -29,6 +30,9 @@ class Tournament:
                 cumResults[i] += result
                 # invert result for player 2
                 cumResults[j] += -result
+                matchResults[i][j] = result
+                matchResults[j][i] = -result
+        print(matchResults)
         print(cumResults)
         return cumResults.index(max(cumResults))
 
